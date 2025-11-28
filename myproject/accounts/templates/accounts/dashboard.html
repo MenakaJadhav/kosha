@@ -1,0 +1,21 @@
+<h2>Dashboard</h2>
+
+<a href="{% url 'income_entry' %}">Add Income</a> |
+<a href="{% url 'cash_entry' %}">Add Cash Entry</a> |
+<a href="{% url 'income_history' %}">Income History</a> |
+<a href="{% url 'income_variability' %}">Income Variability</a> |
+<a href="{% url 'logout' %}">Logout</a>
+
+<h3>Recent Income</h3>
+<ul>
+{% for inc in incomes %}
+    <li>{{ inc.date }} — {{ inc.amount }} ({{ inc.income_type }})</li>
+{% endfor %}
+</ul>
+
+<h3>Recent Cash</h3>
+<ul>
+{% for c in cash %}
+    <li>{{ c.date }} — {{ c.description }} — {{ c.amount }}</li>
+{% endfor %}
+</ul>
