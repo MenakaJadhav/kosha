@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Variability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px 40px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stats-card .label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stats-card .amount {
+            font-size: 48px;
+            font-weight: 700;
+            color: #11998e;
+            margin-bottom: 10px;
+        }
+
+        .stats-card .subtitle {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Breakdown Section */
+        .breakdown-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .section-header h3 {
+            font-size: 22px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* List styling */
+        .income-list {
+            list-style: none;
+        }
+
+        .income-list li {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .income-list li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .income-date {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 15px;
+        }
+
+        .income-amount {
+            font-weight: 700;
+            color: #11998e;
+            font-size: 18px;
+        }
+
+        /* Message/Empty State */
+        .message-card {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .message-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .message-card p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Back button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 30px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-link:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 20px 25px;
+            }
+
+            .page-header h2 {
+                font-size: 22px;
+            }
+
+            .stats-card {
+                padding: 30px 20px;
+            }
+
+            .stats-card .amount {
+                font-size: 36px;
+            }
+
+            .breakdown-card {
+                padding: 20px;
+            }
+
+            .income-list li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-icon">📈</div>
+                <h2>Income Variability<br><small style="font-size: 16px; opacity: 0.9;">Including Cash + Income</small></h2>
+            </div>
+        </div>
+
+        {% if msg %}
+            <!-- Message Card -->
+            <div class="message-card">
+                <div class="message-icon">ℹ️</div>
+                <p>{{ msg }}</p>
+            </div>
+        {% else %}
+            <!-- Average Income Stats -->
+            <div class="stats-card">
+                <div class="label">Average Daily Income</div>
+                <div class="amount">Rs. {{ avg_income }}</div>
+                <div class="subtitle">Calculated from your income and cash entries</div>
+            </div>
+
+            <!-- Daily Breakdown -->
+            <div class="breakdown-card">
+                <div class="section-header">
+                    <div class="section-icon">📊</div>
+                    <h3>Daily Income Breakdown</h3>
+                </div>
+
+                <ul class="income-list">
+                    {% for item in daily_totals %}
+                        <li>
+                            <span class="income-date">{{ item.date }}</span>
+                            <span class="income-amount">Rs. {{ item.total_income }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <a href="{% url 'dashboard' %}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

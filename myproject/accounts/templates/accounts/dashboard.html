@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kosha - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px 40px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-bar a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-bar a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-bar a.logout {
+            margin-left: auto;
+            color: #e74c3c;
+        }
+
+        .nav-bar a.logout:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .income-icon {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .cash-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .card-header h3 {
+            font-size: 22px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* List Styling */
+        .card ul {
+            list-style: none;
+        }
+
+        .card ul li {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card ul li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .entry-date {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .entry-amount {
+            font-weight: 700;
+            color: #11998e;
+            font-size: 16px;
+        }
+
+        .entry-type {
+            color: #666;
+            font-size: 13px;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .entry-description {
+            color: #555;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-bar a {
+                justify-content: center;
+            }
+
+            .nav-bar a.logout {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-content">
+                <h2>Dashboard</h2>
+                <div class="user-info">
+                    <div class="user-avatar">$</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="{% url 'income_entry' %}">💰 Add Income</a>
+            <a href="{% url 'cash_entry' %}">💵 Add Cash Entry</a>
+            <a href="{% url 'income_history' %}">📊 Income History</a>
+            <a href="{% url 'income_variability' %}">📈 Income Variability</a>
+            <a href="{% url 'coach:dashboard_ui' %}">🎯 Coach Dashboard</a>
+            <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Recent Income Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon income-icon">💰</div>
+                    <h3>Recent Income</h3>
+                </div>
+                {% if incomes %}
+                <ul>
+                {% for inc in incomes %}
+                    <li>
+                        <span class="entry-date">{{ inc.date }}</span>
+                        <span class="entry-description">{{ inc.income_type }}</span>
+                        <span class="entry-amount">${{ inc.amount }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>No income entries yet. Start by adding your first income!</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Cash Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon cash-icon">💵</div>
+                    <h3>Recent Cash</h3>
+                </div>
+                {% if cash %}
+                <ul>
+                {% for c in cash %}
+                    <li>
+                        <span class="entry-date">{{ c.date }}</span>
+                        <span class="entry-description">{{ c.description }}</span>
+                        <span class="entry-amount">${{ c.amount }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>No cash entries yet. Start tracking your cash flow!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

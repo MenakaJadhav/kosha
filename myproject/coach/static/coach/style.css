@@ -1,0 +1,21 @@
+/* coach/static/coach/styles.css - basic clean styles */
+body { font-family: Inter, Arial, sans-serif; background: #f6f7fb; color:#111; margin:0 }
+.container { max-width:1000px; margin:0 auto; padding:20px }
+.topnav { background:#fff; border-bottom:1px solid #eee; padding:10px 0 }
+.topnav .container { display:flex; justify-content:space-between; align-items:center }
+.topnav .brand { font-weight:600; text-decoration:none; color:#222 }
+.toplinks a { margin-left:12px; text-decoration:none; color:#333 }
+.card { background:#fff; padding:16px; border-radius:10px; box-shadow: 0 1px 6px rgba(0,0,0,0.04); margin-bottom:12px }
+.grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px }
+.stack .card { margin-bottom:10px }
+.btn { display:inline-block; padding:8px 12px; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none }
+.btn.small { padding:6px 8px; font-size:0.9rem }
+.small { font-size:0.9rem }
+.muted { color:#666 }
+.inline-form { display:inline-block; margin-left:10px }
+.messages { list-style:none; padding:0 }
+.messages .msg { padding:8px; margin:8px 0; border-radius:6px }
+.msg.success { background:#e6ffed; color:#064e2a }
+.msg.error { background:#ffefef; color:#621010 }
+.heatmap table { width:100%; border-collapse:collapse }
+.heatmap th, .heatmap td { border:1px solid #eee; padding:10px; text-align:center }

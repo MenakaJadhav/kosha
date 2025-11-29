@@ -1,0 +1,310 @@
+<!-- coach/templates/coach/heatmap.html -->
+{% extends "coach/base.html" %}
+{% block title %}Heatmap — Coach{% endblock %}
+
+{% block content %}
+<style>
+  .page-header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
+  }
+
+  .page-header h1 {
+    color: white;
+    font-size: 36px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .page-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  /* Heatmap Container */
+  .heatmap-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    overflow-x: auto;
+  }
+
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+  }
+
+  .legend-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .legend-scale {
+    display: flex;
+    gap: 5px;
+  }
+
+  .legend-item {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+  }
+
+  /* Heatmap Table */
+  table.heatmap {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px;
+    margin: 0 auto;
+  }
+
+  table.heatmap th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  table.heatmap td {
+    padding: 25px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  table.heatmap td:hover {
+    transform: scale(1.1);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Color coding based on value */
+  table.heatmap td[data-value="0"] {
+    background: #f0f0f0;
+    color: #999;
+  }
+
+  table.heatmap td {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+  }
+
+  /* Add tooltip on hover */
+  table.heatmap td::after {
+    content: "₹" attr(data-value);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  table.heatmap td:hover::after {
+    opacity: 1;
+  }
+
+  /* Recent Data Section */
+  .recent-data-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .section-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+  }
+
+  .section-header h3 {
+    font-size: 22px;
+    color: #333;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .data-list {
+    list-style: none;
+  }
+
+  .data-list li {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .data-list li:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+  }
+
+  .data-date {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 15px;
+  }
+
+  .data-amount {
+    font-weight: 700;
+    color: #11998e;
+    font-size: 18px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 25px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .heatmap-card {
+      padding: 20px;
+    }
+
+    table.heatmap {
+      border-spacing: 5px;
+    }
+
+    table.heatmap th,
+    table.heatmap td {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .heatmap-legend {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<div class="page-header">
+  <h1>🔥 Weekly Earnings Heatmap</h1>
+  <p class="page-subtitle">Visualize your income patterns across the week</p>
+</div>
+
+<div class="heatmap-card">
+  <div class="heatmap-legend">
+    <span class="legend-label">💡 Intensity Scale:</span>
+    <div class="legend-scale">
+      <div class="legend-item" style="background: #f0f0f0; color: #999;">Low</div>
+      <div class="legend-item" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white;">High</div>
+    </div>
+  </div>
+
+  <table class="heatmap">
+    <thead>
+      <tr>
+        {% for day in weekdays.keys %}
+          <th>{{ day }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for v in weekdays.values %}
+          <td data-value="{{ v }}">₹{{ v }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="recent-data-card">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <h3>Daily Values (Recent)</h3>
+  </div>
+
+  {% if raw %}
+    <ul class="data-list">
+      {% for r in raw %}
+        <li>
+          <span class="data-date">{{ r.date }}</span>
+          <span class="data-amount">₹{{ r.amount }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <p>No data available</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

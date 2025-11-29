@@ -1,0 +1,35 @@
+<!-- coach/templates/coach/advice.html -->
+
+{% extends "coach/base.html" %}
+{% load static %}
+{% block title %}Advice — Coach{% endblock %}
+
+{% block content %}
+<h1>Advice Feed</h1>
+
+{% if cards %}
+  <div class="stack">
+    {% for c in cards %}
+      <article class="card">
+        <header class="card-head">
+          <h3>{{ c.title }}</h3>
+          <form method="post" action="{% url 'coach:mark_read' %}" class="inline-form js-mark-read">
+            {% csrf_token %}
+            <input type="hidden" name="card_id" value="{{ c.id }}">
+            {% if not c.read %}
+              <button class="btn small" type="submit">Mark read</button>
+            {% else %}
+              <span class="muted">Read</span>
+            {% endif %}
+          </form>
+        </header>
+        <p>{{ c.body }}</p>
+        <small class="muted">{{ c.tag }} • {{ c.created_at }}</small>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No advice yet.</p>
+{% endif %}
+
+{% endblock %}

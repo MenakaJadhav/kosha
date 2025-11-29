@@ -1,0 +1,388 @@
+<!-- coach/templates/coach/goals.html -->
+
+{% extends "coach/base.html" %}
+{% block title %}Goals — Coach{% endblock %}
+
+{% block content %}
+<style>
+  .page-header {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(17, 153, 142, 0.3);
+  }
+
+  .page-header h1 {
+    color: white;
+    font-size: 36px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .page-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  /* Create Goal Form */
+  .create-goal-card {
+    background: white;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+  }
+
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .form-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+  }
+
+  .form-header h3 {
+    font-size: 22px;
+    color: #333;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .create-goal-card form {
+    display: grid;
+    gap: 20px;
+  }
+
+  .create-goal-card label {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .create-goal-card input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .create-goal-card input:focus {
+    outline: none;
+    border-color: #11998e;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
+  }
+
+  .create-goal-card .btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 10px;
+  }
+
+  .create-goal-card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(17, 153, 142, 0.4);
+  }
+
+  /* Goals Section */
+  .goals-section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .section-icon-large {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .goals-section-header h2 {
+    margin: 0;
+    color: #333;
+  }
+
+  /* Goal Cards Grid */
+  .goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .goal-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .goal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  }
+
+  .goal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .goal-card h4 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .goal-icon {
+    font-size: 24px;
+  }
+
+  .goal-stats {
+    margin-bottom: 20px;
+  }
+
+  .goal-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .goal-stat-row:last-child {
+    border-bottom: none;
+  }
+
+  .goal-label {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .goal-value {
+    color: #333;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .goal-value.target {
+    color: #11998e;
+  }
+
+  .goal-value.current {
+    color: #667eea;
+  }
+
+  /* Progress Bar */
+  .progress-container {
+    margin-top: 20px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border-radius: 20px;
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Empty State */
+  .empty-state {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  .empty-state p {
+    color: #666;
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 25px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .goals-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .create-goal-card {
+      padding: 25px;
+    }
+  }
+</style>
+
+<div class="page-header">
+  <h1>🎯 Goals</h1>
+  <p class="page-subtitle">Set financial targets and track your progress</p>
+</div>
+
+<div class="create-goal-card">
+  <div class="form-header">
+    <div class="form-icon">➕</div>
+    <h3>Create New Goal</h3>
+  </div>
+  
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label>Goal Name</label>
+      <input name="name" required placeholder="e.g., Emergency Fund, New Laptop">
+    </div>
+    
+    <div>
+      <label>Target Amount</label>
+      <input name="target_amount" type="number" step="0.01" required placeholder="₹ 50000">
+    </div>
+    
+    <div>
+      <label>Deadline (Optional)</label>
+      <input name="deadline" type="date">
+    </div>
+    
+    <button class="btn" type="submit">💾 Save Goal</button>
+  </form>
+</div>
+
+<div class="goals-section-header">
+  <div class="section-icon-large">📊</div>
+  <h2>Your Goals</h2>
+</div>
+
+{% if goals %}
+  <div class="goals-grid">
+    {% for g in goals %}
+      <article class="goal-card">
+        <h4><span class="goal-icon">🎯</span>{{ g.name }}</h4>
+        
+        <div class="goal-stats">
+          <div class="goal-stat-row">
+            <span class="goal-label">Target Amount</span>
+            <span class="goal-value target">₹{{ g.target_amount }}</span>
+          </div>
+          
+          <div class="goal-stat-row">
+            <span class="goal-label">Current Amount</span>
+            <span class="goal-value current">₹{{ g.current_amount }}</span>
+          </div>
+        </div>
+        
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span>{{ g.progress|floatformat:1 }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ g.progress }}%"></div>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🎯</div>
+    <p>No saved goals yet. Create your first financial goal above!</p>
+  </div>
+{% endif %}
+{% endblock %}
